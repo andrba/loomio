@@ -12,6 +12,8 @@ class AddCohortTables < ActiveRecord::Migration
       t.integer :group_id
       t.date    :measured_on
       t.integer :members_count
+      t.integer :admins_count
+      t.integer :subgroups_count
       t.integer :invitations_count
       t.integer :discussions_count
       t.integer :proposals_count
