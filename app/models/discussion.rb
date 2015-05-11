@@ -68,7 +68,7 @@ class Discussion < ActiveRecord::Base
     created_at
   end
 
-  def organization_id
+  def organisation_id
     group.parent.try(:id) || group_id
   end
 

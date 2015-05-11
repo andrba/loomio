@@ -8,8 +8,8 @@ class API::DiscussionsController < API::RestfulController
     respond_with_discussions
   end
 
-  def inbox_by_organization
-    @discussions = grouped inbox_threads.group_by(&:organization_id)
+  def inbox_by_organisation
+    @discussions = grouped inbox_threads.group_by(&:organisation_id)
     respond_with_discussions
   end
 

@@ -8,14 +8,24 @@ describe MeasurementService do
 
     before do
       group
-      user = create :user
-      group.add_admin! user
-      InvitationService.invite_to_group(group: group, recipient_emails: ['a@b.c'], inviter: user, message: 'hi')
-      discussion = create :discussion, group: group, author: user
-      motion = create :motion, discussion: discussion, author: user
-      comment = create :comment, discussion: discussion, author: user
-      CommentService.like(comment: comment, actor: user)
+      member = create :user
+      group.add_admin! member
+      InvitationService.invite_to_group(group: group, recipient_emails: ['a@b.c'], inviter: member, message: 'hi')
+      discussion = create :discussion, group: group, author: member
+      motion = create :motion, discussion: discussion, author: member
+      comment = create :comment, discussion: discussion, author: member
+      CommentService.like(comment: comment, actor: member)
       create :group, parent: group
+
+      member_visit = Visit.create(id: SecureRandom.uuid, user: member)
+      GroupVisit.create(visit: member_visit, group: group)
+      OrganisationVisit.create(visit: member_visit, organisation: group)
+
+      non_member = create :user
+      non_member_visit = Visit.create(id: SecureRandom.uuid, user: non_member)
+      GroupVisit.create(visit: non_member_visit, group: group)
+      OrganisationVisit.create(visit: non_member_visit, organisation: group)
+
       MeasurementService.measure_groups
     end
 
@@ -31,6 +41,10 @@ describe MeasurementService do
       measurement.comments_count.should == 1
       measurement.likes_count.should == 1
       measurement.subgroups_count.should == 1
+      measurement.visits_count.should == 2
+      measurement.member_visits_count.should == 1
+      measurement.organisation_visits_count.should == 2
+      measurement.member_organisation_visits_count.should == 1
     end
   end
 end

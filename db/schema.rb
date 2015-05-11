@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150509033623) do
+ActiveRecord::Schema.define(version: 20150511022101) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -280,8 +280,13 @@ ActiveRecord::Schema.define(version: 20150509033623) do
     t.integer "proposals_count"
     t.integer "comments_count"
     t.integer "likes_count"
+    t.integer "visits_count"
+    t.integer "member_visits_count"
+    t.integer "organisation_visits_count"
+    t.integer "member_organisation_visits_count"
   end
 
+  add_index "group_measurements", ["group_id", "measured_on"], name: "index_group_measurements_on_group_id_and_measured_on", unique: true, using: :btree
   add_index "group_measurements", ["group_id"], name: "index_group_measurements_on_group_id", using: :btree
   add_index "group_measurements", ["measured_on"], name: "index_group_measurements_on_measured_on", using: :btree
 
@@ -335,6 +340,13 @@ ActiveRecord::Schema.define(version: 20150509033623) do
     t.datetime "created_at",                                             null: false
     t.datetime "updated_at",                                             null: false
   end
+
+  create_table "group_visits", force: :cascade do |t|
+    t.uuid    "visit_id"
+    t.integer "group_id"
+  end
+
+  add_index "group_visits", ["visit_id", "group_id"], name: "index_group_visits_on_visit_id_and_group_id", unique: true, using: :btree
 
   create_table "groups", force: :cascade do |t|
     t.string   "name",                               limit: 255
@@ -564,6 +576,13 @@ ActiveRecord::Schema.define(version: 20150509033623) do
   add_index "omniauth_identities", ["email"], name: "index_personas_on_email", using: :btree
   add_index "omniauth_identities", ["provider", "uid"], name: "index_omniauth_identities_on_provider_and_uid", using: :btree
   add_index "omniauth_identities", ["user_id"], name: "index_personas_on_user_id", using: :btree
+
+  create_table "organisation_visits", force: :cascade do |t|
+    t.uuid    "visit_id"
+    t.integer "organisation_id"
+  end
+
+  add_index "organisation_visits", ["visit_id", "organisation_id"], name: "index_organisation_visits_on_visit_id_and_organisation_id", unique: true, using: :btree
 
   create_table "subscriptions", force: :cascade do |t|
     t.integer  "group_id"

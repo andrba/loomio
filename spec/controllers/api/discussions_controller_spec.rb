@@ -58,16 +58,16 @@ describe API::DiscussionsController do
     end
   end
 
-  describe 'inbox_by_organization' do
-    it 'returns a list of discussions by organization' do
-      get :inbox_by_organization
+  describe 'inbox_by_organisation' do
+    it 'returns a list of discussions by organisation' do
+      get :inbox_by_organisation
       json = JSON.parse(response.body)
       expect(json.keys).to include *(%w[users groups proposals discussions])
     end
 
     it 'returns results from subgroups' do
       subgroup_discussion
-      get :inbox_by_organization
+      get :inbox_by_organisation
       json = JSON.parse(response.body)
       ids = json['discussions'].map { |v| v['id'] }
       expect(ids).to include subgroup_discussion.id

@@ -1,5 +1,6 @@
 class MeasurementService
   def self.measure_groups
+    GroupMeasurement.where('measured_on = current_date').delete_all
     str = "
     WITH counts AS (
       SELECT
@@ -25,7 +26,11 @@ class MeasurementService
       discussions_count: Discussion.published.where('group_id = groups.id').select('COUNT(discussions.id)').to_sql,
       proposals_count: Motion.joins(:discussion).where('discussions.group_id = groups.id').select('COUNT(motions.id)').to_sql,
       comments_count: Comment.joins('JOIN discussions ON comments.discussion_id = discussions.id').where('discussions.group_id = groups.id').select('COUNT(comments.id)').to_sql,
-      likes_count: CommentVote.joins('JOIN comments ON comment_votes.comment_id = comments.id JOIN discussions ON comments.discussion_id = discussions.id').where('discussions.group_id = groups.id').select('COUNT(comment_votes.id)').to_sql
+      likes_count: CommentVote.joins('JOIN comments ON comment_votes.comment_id = comments.id JOIN discussions ON comments.discussion_id = discussions.id').where('discussions.group_id = groups.id').select('COUNT(comment_votes.id)').to_sql,
+      visits_count: GroupVisit.where('group_id = groups.id').select('COUNT(group_visits.id)').to_sql,
+      member_visits_count: GroupVisit.joins(:visit).where('visits.user_id IN (SELECT user_id FROM memberships WHERE group_id = groups.id) AND group_id = groups.id').select('COUNT(group_visits.id)').to_sql,
+      organisation_visits_count: OrganisationVisit.where('organisation_id = groups.id').select('COUNT(organisation_visits.id)').to_sql,
+      member_organisation_visits_count: OrganisationVisit.joins(:visit).where('visits.user_id IN (SELECT user_id FROM memberships WHERE group_id = groups.id) AND organisation_id = groups.id').select('COUNT(organisation_visits.id)').to_sql,
     }
   end
 end

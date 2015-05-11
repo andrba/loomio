@@ -23,5 +23,6 @@ class AddCohortTables < ActiveRecord::Migration
 
     add_index :group_measurements, :group_id
     add_index :group_measurements, :measured_on
+    add_index :group_measurements, [:group_id, :measured_on], unique: true
   end
 end

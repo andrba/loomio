@@ -7,6 +7,7 @@ class DiscussionsController < GroupBaseController
   authorize_resource :except => [:new, :create, :index, :add_comment]
 
   after_filter :mark_as_read, only: :show
+  after_filter :track_visit, only: :show
 
   rescue_from ActiveRecord::RecordNotFound do
     render 'application/display_error', locals: { message: t('error.not_found') }
@@ -108,8 +109,6 @@ class DiscussionsController < GroupBaseController
     assign_meta_data
 
     @feed_url = discussion_url @discussion, format: :xml if @discussion.public?
-
-    ahoy.track "View Discussion", discussion_id: @discussion.id, group_id: @group.id, page: params[:page]
   end
 
   def set_volume
