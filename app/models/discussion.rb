@@ -74,7 +74,7 @@ class Discussion < ActiveRecord::Base
   end
 
   def organisation_id
-    group.parent.try(:id) || group_id
+    group.parent_id || group_id
   end
 
   def archive!
